@@ -17,7 +17,7 @@ public class workflowController {
         return "Welcome";
     }
 
-    @PostMapping("/{workflowId}")
+    @PostMapping("/api/{workflowId}")
     public String startworkflow(@PathVariable String workflowId){
         return new NiceWorker().startWorkflow(workflowId);
     }
