@@ -15,8 +15,12 @@ import com.amazonaws.services.simpleworkflow.flow.WorkflowWorker;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.HumanTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesImpl;
 import com.awsswf.AWSFlow.config.MySWFClient;
-import com.awsswf.AWSFlow.model.Task;
 
 public class NiceWorker {
 
@@ -30,7 +34,7 @@ public class NiceWorker {
         try {
 
             ActivityWorker aw = new ActivityWorker(service, domain, taskList);
-            aw.addActivitiesImplementations(startActivities(workflowId, service, domain, taskList));
+            aw.addActivitiesImplementations(startActivities(workflowId));
             aw.start();
 
             WorkflowWorker wfw = new WorkflowWorker(service, domain, taskList);
@@ -50,8 +54,7 @@ public class NiceWorker {
 
     }
 
-    private List<Object> startActivities(String workflowID, AmazonSimpleWorkflow service, String domain,
-            String taskList) {
+    private List<Object> startActivities(String workflowID) {
 
         List<Object> activityList = new ArrayList<>();
 
@@ -81,50 +84,26 @@ public class NiceWorker {
                 switch (task) {
                     case "Notification":
                         activityList.add(new NotificationTaskActivitiesImpl());
-                        // TaskWorker<NotificationTaskActivitiesImpl> notificationWorker = new
-                        // TaskWorker<NotificationTaskActivitiesImpl>(
-                        // new NotificationTaskActivitiesImpl());
-                        // notificationWorker.startWorker();
                         System.out.println("Notification Activity Worker started");
                         break;
 
                     case "Timer":
                         activityList.add(new TimerTaskActivitiesImpl());
-
-                        // TaskWorker<TimerTaskActivitiesImpl> timerWorker = new
-                        // TaskWorker<TimerTaskActivitiesImpl>(
-                        // new TimerTaskActivitiesImpl());
-                        // timerWorker.startWorker();
                         System.out.println("Timer Activity Worker started");
                         break;
 
                     case "Automated":
                         activityList.add(new AutomatedTaskActivitiesImpl());
-
-                        // TaskWorker<AutomatedTaskActivitiesImpl> automatedWorker = new
-                        // TaskWorker<AutomatedTaskActivitiesImpl>(
-                        // new AutomatedTaskActivitiesImpl());
-                        // automatedWorker.startWorker();
                         System.out.println("Automated Activity Worker started");
                         break;
 
                     case "Dependency":
                         activityList.add(new DependencyTaskActivitiesImpl());
-
-                        // TaskWorker<DependencyTaskActivitiesImpl> dependencyWorker = new
-                        // TaskWorker<DependencyTaskActivitiesImpl>(
-                        // new DependencyTaskActivitiesImpl());
-                        // dependencyWorker.startWorker();
                         System.out.println("Dependency Activity Worker started");
                         break;
 
                     case "Human":
                         activityList.add(new HumanTaskActivitiesImpl());
-
-                        // TaskWorker<HumanTaskActivitiesImpl> humanWorker = new
-                        // TaskWorker<HumanTaskActivitiesImpl>(
-                        // new HumanTaskActivitiesImpl());
-                        // humanWorker.startWorker();
                         System.out.println("Human Activity Worker started");
                         break;
 

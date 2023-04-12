@@ -14,7 +14,7 @@ import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflowClientBuilder;
 @Configuration
 public class MySWFClient {
 
-    private static String DOMAIN = "MyDomain";
+    private static String DOMAIN = "HelloDomain";
     private static String TASKLIST = "NiceWorkerList";
 
     public static String getDomain(){

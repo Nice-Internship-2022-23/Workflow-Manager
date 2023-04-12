@@ -1,4 +1,4 @@
-package com.awsswf.AWSFlow.aws;
+package com.awsswf.AWSFlow.aws.activities;
 
 import com.amazonaws.services.simpleworkflow.flow.annotations.Activities;
 import com.amazonaws.services.simpleworkflow.flow.annotations.Activity;
@@ -6,9 +6,9 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 
 @Activities(version = "1.0")
 @ActivityRegistrationOptions(defaultTaskScheduleToStartTimeoutSeconds = 300, defaultTaskStartToCloseTimeoutSeconds = 10)
-public interface DependencyTaskActivities {
+public interface HumanTaskActivities {
     
-    @Activity(name = "DependecyTask")
-    public void performDependencyTask();
+    @Activity(name = "HumanTask")
+    public void performHumanTask();
     
 }

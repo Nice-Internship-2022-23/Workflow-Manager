@@ -7,6 +7,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivities;
+import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivities;
+import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.HumanTaskActivities;
+import com.awsswf.AWSFlow.aws.activities.HumanTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivities;
+import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.TimerTaskActivities;
+import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesImpl;
 import com.awsswf.AWSFlow.model.Task;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
