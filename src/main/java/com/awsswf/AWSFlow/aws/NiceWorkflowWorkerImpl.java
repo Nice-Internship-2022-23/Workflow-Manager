@@ -1,6 +1,7 @@
 package com.awsswf.AWSFlow.aws;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -18,75 +19,69 @@ import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesImpl;
 import com.awsswf.AWSFlow.aws.activities.TimerTaskActivities;
 import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesImpl;
 import com.awsswf.AWSFlow.model.Task;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
 
-  @Override
-  public void initiateWorkflow(String workflowID) {
-      
-      RestTemplate restTemplate = new RestTemplate();
+    @Override
+    public void initiateWorkflow(String workflowID) {
 
-      String url = "http://localhost:8080/api/getTasks/";
+        RestTemplate restTemplate = new RestTemplate();
 
-      String apiUrl = url + workflowID;
+        String url = "http://localhost:8080/api/stageTaskList/";
 
-      ParameterizedTypeReference<ArrayList<Task>> responseType = new ParameterizedTypeReference<ArrayList<Task>>() {
-      };
+        String apiUrl = url + workflowID;
 
-      ResponseEntity<ArrayList<Task>> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, null,
-              responseType);
-      ArrayList<Task> response = responseEntity.getBody();
+        ParameterizedTypeReference<Map<String, ArrayList<Task>>> responseType = new ParameterizedTypeReference<Map<String, ArrayList<Task>>>() {
+        };
 
-      ObjectMapper mapper = new ObjectMapper();
+        ResponseEntity<Map<String, ArrayList<Task>>> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET,
+                null,
+                responseType);
+        Map<String, ArrayList<Task>> response = responseEntity.getBody();
 
-      try {
-          ArrayList<Task> tasks = mapper.readValue(mapper.writeValueAsString(response),
-                  new TypeReference<ArrayList<Task>>() {
-                  });
+        for(String key : response.keySet()){
+            System.out.println(key);
+            for(Task task : response.get(key)){
+                switch (task.getTaskName()) {
+                    case "Notification":
+                        NotificationTaskActivities notificationTaskActivities = new NotificationTaskActivitiesImpl();
+                        notificationTaskActivities.sendNotification("", "");
+                        System.out.println("Notification Task performed successfully.");
+                        break;
 
-          for (Task task : tasks) {
-              switch (task.getTaskName()) {
-                  case "Notification":
-                      NotificationTaskActivities notificationTaskActivities = new NotificationTaskActivitiesImpl();
-                      notificationTaskActivities.sendNotification("", "");
-                      System.out.println("Notification Task performed successfully.");
-                      break;
+                    case "Timer":
+                        TimerTaskActivities timerTaskActivities = new TimerTaskActivitiesImpl();
+                        timerTaskActivities.performTimerTask();
+                        System.out.println("Timer Task performed successfully.");
+                        break;
 
-                  case "Timer":
-                      TimerTaskActivities timerTaskActivities = new TimerTaskActivitiesImpl();
-                      timerTaskActivities.performTimerTask();
-                      System.out.println("Timer Task performed successfully.");
-                      break;
+                    case "Automated":
+                        AutomatedTaskActivities automatedTaskActivities = new AutomatedTaskActivitiesImpl();
+                        automatedTaskActivities.performAutomatedTask();
+                        System.out.println("Automated Task performed successfully.");
+                        break;
 
-                  case "Automated":
-                      AutomatedTaskActivities automatedTaskActivities = new AutomatedTaskActivitiesImpl();
-                      automatedTaskActivities.performAutomatedTask();
-                      System.out.println("Automated Task performed successfully.");
-                      break;
+                    case "Dependency":
+                        DependencyTaskActivities dependencyTaskActivities = new DependencyTaskActivitiesImpl();
+                        dependencyTaskActivities.performDependencyTask();
+                        System.out.println("Dependency Task performed successfully.");
+                        break;
 
-                  case "Dependency":
-                      DependencyTaskActivities dependencyTaskActivities = new DependencyTaskActivitiesImpl();
-                      dependencyTaskActivities.performDependencyTask();
-                      System.out.println("Dependency Task performed successfully.");
-                      break;
+                    case "Human":
+                        HumanTaskActivities humanTaskActivities = new HumanTaskActivitiesImpl();
+                        humanTaskActivities.performHumanTask();
+                        System.out.println("Human Task performed successfully.");
+                        break;
 
-                  case "Human":
-                      HumanTaskActivities humanTaskActivities = new HumanTaskActivitiesImpl();
-                      humanTaskActivities.performHumanTask();
-                      System.out.println("Human Task performed successfully.");
-                      break;
+                    default:
 
-                  default:
-                      
-              }
-          }
+                }
+            }
 
-          System.out.println("All tasks are performed successfully.");
 
-      } catch (JsonProcessingException e) {
-          e.printStackTrace();
-      }
-  }
- }
+            System.out.println("\n\t\tStage : " + key + " performed successfully");
+        }
+
+        System.out.println("All tasks in stages performed");
+    }
+}
