@@ -24,6 +24,8 @@ import com.awsswf.AWSFlow.config.MySWFClient;
 
 public class NiceWorker {
 
+    private RestTemplate restTemplate = new RestTemplate();
+
     public String startWorkflow(String workflowId) {
 
         AmazonSimpleWorkflow service = MySWFClient.getSWF();
@@ -46,7 +48,14 @@ public class NiceWorker {
             NiceWorkflowWorkerClientExternal worker = factory.getClient(executionId);
             worker.initiateWorkflow(workflowId);
 
-            return "Workflow Started";
+            String url = "http://localhost:8080/api/getWorkflowName/" + workflowId;
+            ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<String>() {
+            };
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null,
+                responseType);
+
+            return responseEntity.getBody() + " Started";
 
         } catch (Exception e) {
             return "Error " + e;
@@ -57,10 +66,6 @@ public class NiceWorker {
     private List<Object> startActivities(String workflowID) {
 
         List<Object> activityList = new ArrayList<>();
-
-        
-
-        RestTemplate restTemplate = new RestTemplate();
 
         String url = "http://localhost:8080/api/getOnlyTasks/";
 

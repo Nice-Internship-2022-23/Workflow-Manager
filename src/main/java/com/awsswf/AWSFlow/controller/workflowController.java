@@ -1,5 +1,10 @@
 package com.awsswf.AWSFlow.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +22,12 @@ public class workflowController {
         return "Welcome";
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/api/{workflowId}")
-    public String startworkflow(@PathVariable String workflowId){
-        return new NiceWorker().startWorkflow(workflowId);
+    public ResponseEntity<?> startworkflow(@PathVariable String workflowId){
+        String message = String.format(new NiceWorker().startWorkflow(workflowId));
+            Map<String, String> response = new HashMap<>();
+            response.put("message", message);
+        return ResponseEntity.ok().body(response);
     }
 }
