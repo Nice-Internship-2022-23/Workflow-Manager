@@ -9,7 +9,7 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 public interface NotificationTaskActivities {
     
     @Activity(name = "NotificationTask")
-    public void sendNotification(String message, String recipient);
+    public String sendNotification(String message, String recipient);
     
 }
 

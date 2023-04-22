@@ -14,16 +14,8 @@ import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflowClientBuilder;
 @Configuration
 public class MySWFClient {
 
-    private static String DOMAIN = "HelloDomain";
-    private static String TASKLIST = "NiceWorkerList";
-
-    public static String getDomain(){
-        return DOMAIN;
-    }
-
-    public static String getTaskList(){
-        return TASKLIST;
-    }
+    public static String DOMAIN = "Domain-6";
+    public static String TASKLIST = "taskList";
 
     public static String getExecutionId(){
         String ExecutionId = UUID.randomUUID().toString();

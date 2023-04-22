@@ -9,7 +9,7 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 public interface AutomatedTaskActivities {
     
     @Activity(name = "AutomatedTask")
-    public void performAutomatedTask();
+    public String performAutomatedTask();
     
 }
 

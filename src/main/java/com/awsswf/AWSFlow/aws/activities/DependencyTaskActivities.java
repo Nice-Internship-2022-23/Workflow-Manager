@@ -9,6 +9,6 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 public interface DependencyTaskActivities {
     
     @Activity(name = "DependecyTask")
-    public void performDependencyTask();
+    public String performDependencyTask();
     
 }

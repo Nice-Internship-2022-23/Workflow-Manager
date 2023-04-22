@@ -8,19 +8,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivities;
-import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivitiesImpl;
-import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivities;
-import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivitiesImpl;
-import com.awsswf.AWSFlow.aws.activities.HumanTaskActivities;
-import com.awsswf.AWSFlow.aws.activities.HumanTaskActivitiesImpl;
-import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivities;
-import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesImpl;
-import com.awsswf.AWSFlow.aws.activities.TimerTaskActivities;
-import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesImpl;
+import com.amazonaws.services.simpleworkflow.flow.DecisionContext;
+import com.amazonaws.services.simpleworkflow.flow.DecisionContextProviderImpl;
+import com.amazonaws.services.simpleworkflow.flow.WorkflowClock;
+import com.amazonaws.services.simpleworkflow.flow.core.Promise;
+import com.awsswf.AWSFlow.aws.activities.StageTaskActivitiesClient;
+import com.awsswf.AWSFlow.aws.activities.StageTaskActivitiesClientImpl;
 import com.awsswf.AWSFlow.model.Task;
 
 public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
+
+    private StageTaskActivitiesClient stageTaskActivitiesClient = new StageTaskActivitiesClientImpl();
+
+    // private DecisionContext decisionContext = new DecisionContextProviderImpl().getDecisionContext();
+    // private WorkflowClock clock = decisionContext.getWorkflowClock();
 
     @Override
     public void initiateWorkflow(String workflowID) {
@@ -38,50 +39,16 @@ public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
                 null,
                 responseType);
         Map<String, ArrayList<Task>> response = responseEntity.getBody();
-
+        Promise<String> res = null;
         for(String key : response.keySet()){
-            System.out.println(key);
-            for(Task task : response.get(key)){
-                switch (task.getTaskName()) {
-                    case "Notification":
-                        NotificationTaskActivities notificationTaskActivities = new NotificationTaskActivitiesImpl();
-                        notificationTaskActivities.sendNotification("", "");
-                        System.out.println("Notification Task performed successfully.");
-                        break;
-
-                    case "Timer":
-                        TimerTaskActivities timerTaskActivities = new TimerTaskActivitiesImpl();
-                        timerTaskActivities.performTimerTask();
-                        System.out.println("Timer Task performed successfully.");
-                        break;
-
-                    case "Automated":
-                        AutomatedTaskActivities automatedTaskActivities = new AutomatedTaskActivitiesImpl();
-                        automatedTaskActivities.performAutomatedTask();
-                        System.out.println("Automated Task performed successfully.");
-                        break;
-
-                    case "Dependency":
-                        DependencyTaskActivities dependencyTaskActivities = new DependencyTaskActivitiesImpl();
-                        dependencyTaskActivities.performDependencyTask();
-                        System.out.println("Dependency Task performed successfully.");
-                        break;
-
-                    case "Human":
-                        HumanTaskActivities humanTaskActivities = new HumanTaskActivitiesImpl();
-                        humanTaskActivities.performHumanTask();
-                        System.out.println("Human Task performed successfully.");
-                        break;
-
-                    default:
-
-                }
-            }
-
-
-            System.out.println("\n\t\tStage : " + key + " performed successfully");
+            System.out.println("\n\t\t" + key);
+            // res = stageTaskActivitiesClient.performActivities(key, response.get(key));
+            String result = new TaskListWorker().performTasks(key, response.get(key));
+            System.out.println(result);
+            // clock.createTimer(1000);
         }
 
-        System.out.println("All tasks in stages performed");
+        System.out.println("All tasks in all stages performed");
+        
     }
 }

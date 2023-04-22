@@ -1,19 +1,16 @@
 package com.awsswf.AWSFlow.aws.activities;
 
-import com.amazonaws.services.simpleworkflow.flow.annotations.Asynchronous;
-import com.amazonaws.services.simpleworkflow.flow.annotations.ExponentialRetry;
-
 public class DependencyTaskActivitiesImpl implements DependencyTaskActivities{
 
     @Override
-    @Asynchronous
-    @ExponentialRetry(initialRetryIntervalSeconds = 1, maximumAttempts = 3)
-    public void performDependencyTask() {
+    public String performDependencyTask() {
         System.out.println("Peforming Dependency task...");
         try {
             Thread.sleep(2000);
+            return "Dependency Task";
         } catch (InterruptedException e) {
             e.printStackTrace();
+            return e.getMessage().toString();
         }
         // perform dependency task
     }

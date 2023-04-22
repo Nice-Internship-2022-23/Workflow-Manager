@@ -9,6 +9,6 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 public interface HumanTaskActivities {
     
     @Activity(name = "HumanTask")
-    public void performHumanTask();
+    public String performHumanTask();
     
 }
