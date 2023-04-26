@@ -8,8 +8,7 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.WorkflowRegistrati
 import com.awsswf.AWSFlow.model.Task;
 
 @Workflow
-@WorkflowRegistrationOptions(defaultExecutionStartToCloseTimeoutSeconds = 60,
-                 defaultTaskStartToCloseTimeoutSeconds = 10)
+@WorkflowRegistrationOptions(defaultExecutionStartToCloseTimeoutSeconds = 3000000)
 public interface NiceChildWorker {
 
     @Execute(version = "1.0")

@@ -6,7 +6,7 @@ public class NotificationTaskActivitiesImpl implements NotificationTaskActivitie
     public String sendNotification(String message, String recipient) {
         System.out.println("Peforming Notification task...");
         try {
-            Thread.sleep(2000);
+            Thread.sleep(8000);
             return "Notification Task";
         } catch (InterruptedException e) {
             e.printStackTrace();

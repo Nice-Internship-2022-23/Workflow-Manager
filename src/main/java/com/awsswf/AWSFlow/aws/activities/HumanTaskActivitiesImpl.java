@@ -6,7 +6,7 @@ public class HumanTaskActivitiesImpl implements HumanTaskActivities {
     public String performHumanTask() {
         System.out.println("Peforming Human task...");
         try {
-            Thread.sleep(2000);
+            Thread.sleep(20000);
             return "Human Task";
         } catch (InterruptedException e) {
             e.printStackTrace();

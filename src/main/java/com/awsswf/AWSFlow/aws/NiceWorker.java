@@ -1,7 +1,9 @@
 package com.awsswf.AWSFlow.aws;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -27,8 +29,9 @@ import com.awsswf.AWSFlow.config.MySWFClient;
 public class NiceWorker {
 
     private RestTemplate restTemplate = new RestTemplate();
+    private Map<String, String> response = new HashMap<>();
 
-    public String startWorkflow(String workflowId) {
+    public Map<String, String> startWorkflow(String workflowId) {
 
         AmazonSimpleWorkflow service = MySWFClient.getSWF();
         String domain = MySWFClient.DOMAIN;
@@ -63,10 +66,19 @@ public class NiceWorker {
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null,
                 responseType);
 
-            return responseEntity.getBody() + " Started";
+            String workflowExecutionId = worker.getWorkflowExecution().getWorkflowId();
+            String workflowRunId = worker.getWorkflowExecution().getRunId();
+            String worklfowName = responseEntity.getBody();
+
+            response.put("EXECUTIONID", workflowExecutionId);
+            response.put("RUNID", workflowRunId);
+            response.put("NAME", worklfowName);
+            return response;
 
         } catch (Exception e) {
-            return "Error " + e;
+            response.clear();
+            response.put("ERROR", e.getMessage());
+            return response;
         }
 
     }

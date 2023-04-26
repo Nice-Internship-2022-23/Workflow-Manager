@@ -7,7 +7,7 @@ public class AutomatedTaskActivitiesImpl implements AutomatedTaskActivities {
     public String performAutomatedTask() {
         System.out.println("Peforming Automated task...");
         try {
-            Thread.sleep(2000);
+            Thread.sleep(20000);
             return "Automated Task";
         } catch (InterruptedException e) {
             e.printStackTrace();
