@@ -47,7 +47,7 @@ public class workflowManagerServiceImpl implements workflowManagerService{
         
         NiceWorkflowWorkerClientExternalFactory factory = new NiceWorkflowWorkerClientExternalFactoryImpl(service, domain);
         NiceWorkflowWorkerClientExternal worker = factory.getClient(executionId);
-        worker.initiateWorkflow(workflowId, worker.getWorkflowExecution());
+        worker.initiateWorkflow(workflowId);
 
         RestTemplate restTemplate = new RestTemplate();
 

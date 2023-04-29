@@ -10,30 +10,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.amazonaws.services.simpleworkflow.flow.core.Promise;
 import com.amazonaws.services.simpleworkflow.flow.core.Settable;
-import com.amazonaws.services.simpleworkflow.model.WorkflowExecution;
 import com.awsswf.AWSFlow.model.Task;
 
-import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivitiesClient;
-import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivitiesClientImpl;
-import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivitiesClient;
-import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivitiesClientImpl;
-import com.awsswf.AWSFlow.aws.activities.HumanTaskActivitiesClient;
-import com.awsswf.AWSFlow.aws.activities.HumanTaskActivitiesClientImpl;
-import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesClientImpl;
-import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesClient;
-import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesClient;
-import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesClientImpl;
 
 public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
 
-    private NotificationTaskActivitiesClient notificationTaskActivitiesClient = new NotificationTaskActivitiesClientImpl();
-    private HumanTaskActivitiesClient humanTaskActivitiesClient = new HumanTaskActivitiesClientImpl();
-    private AutomatedTaskActivitiesClient automatedTaskActivitiesClient = new AutomatedTaskActivitiesClientImpl();
-    private DependencyTaskActivitiesClient dependencyTaskActivitiesClient = new DependencyTaskActivitiesClientImpl();
-    private TimerTaskActivitiesClient timerTaskActivitiesClient = new TimerTaskActivitiesClientImpl();
-
     @Override
-    public void initiateWorkflow(String workflowID, WorkflowExecution workflowExecution) {
+    public void initiateWorkflow(String workflowID) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -49,42 +32,25 @@ public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
                 responseType);
         Map<String, ArrayList<Task>> stageList = responseEntity.getBody();
 
-        for (Map.Entry<String, ArrayList<Task>> entry : stageList.entrySet()) {
-            String stageName = entry.getKey();
-            ArrayList<Task> tasks = entry.getValue();
-            Promise<String> promise = new Settable<String>("First Activity");
-            for (Task task : tasks) {
-                switch (task.getTaskName()) {
-                    case "Notification":
-                        System.out.println("Notification called");
-                        promise = notificationTaskActivitiesClient.sendNotification(workflowID, url, "", promise);
-                        System.out.println(promise);
-                        break;
-                    case "Timer":
-                        System.out.println("Timer called");
-                        promise = timerTaskActivitiesClient.performTimerTask("", promise);
-                        System.out.println(promise);
-                        break;
-                    case "Automated":
-                        System.out.println("Automated called");
-                        promise = automatedTaskActivitiesClient.performAutomatedTask("", promise);
-                        System.out.println(promise);
-                        break;
-                    case "Dependency":
-                        System.out.println("Dependency called");
-                        promise = dependencyTaskActivitiesClient.performDependencyTask("", promise);
-                        System.out.println(promise);
-                        break;
-                    case "Human":
-                        System.out.println("Human called");
-                        promise = humanTaskActivitiesClient.performHumanTask("", promise);
-                        System.out.println(promise);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unknown task type: " + task.getTaskName());
+        NiceActivityWorkerClient client = new NiceActivityWorkerClientImpl();
+
+        Promise<Long> timer = new Settable<Long>(400L);
+            Promise<String> result = new Settable<String>("First");
+        for(Map.Entry<String, ArrayList<Task>> entry: stageList.entrySet()){
+            
+            for(Task task : entry.getValue()){
+                if(task.getTaskName().equals("Notification")){
+                    result = client.performNotificationTaskActivity(result, result, result, result); 
+                } else if(task.getTaskName().equals("Timer")){
+                    result = client.performTimerTaskActivity(result, timer, result);
+                } else if(task.getTaskName().equals("Human")){
+                    result = client.performHumanTaskActivity(result, result);
+                } else if(task.getTaskName().equals("Dependency")){
+                    result = client.performDependencyTaskActivity(result, result);
+                } else if(task.getTaskName().equals("Automated")){
+                    result = client.performAutomatedTaskActivity(result, result);
                 }
             }
-            System.out.println("Tasks in " + stageName + " completed");
         }
 
         System.out.println("All tasks are completed.");
