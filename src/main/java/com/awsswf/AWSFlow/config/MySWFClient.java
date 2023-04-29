@@ -14,7 +14,7 @@ import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflowClientBuilder;
 @Configuration
 public class MySWFClient {
 
-    public static String DOMAIN = "Domain-8";
+    public static String DOMAIN = "Domain-7";
     public static String TASKLIST = "NiceTaskList";
 
     public static String getExecutionId(){

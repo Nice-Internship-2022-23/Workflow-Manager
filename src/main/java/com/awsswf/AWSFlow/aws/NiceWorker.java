@@ -52,12 +52,11 @@ public class NiceWorker {
 
             WorkflowWorker wfw = new WorkflowWorker(service, domain, taskList);
             wfw.addWorkflowImplementationType(NiceWorkflowWorkerImpl.class);
-            wfw.addWorkflowImplementationType(NiceChildWorkerImpl.class);
             wfw.start();
 
             NiceWorkflowWorkerClientExternalFactory factory = new NiceWorkflowWorkerClientExternalFactoryImpl(service, domain);
             NiceWorkflowWorkerClientExternal worker = factory.getClient(executionId);
-            worker.initiateWorkflow(workflowId);
+            worker.initiateWorkflow(workflowId, worker.getWorkflowExecution());
 
             String url = "http://localhost:8080/api/getWorkflowName/" + workflowId;
             ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<String>() {
@@ -73,6 +72,7 @@ public class NiceWorker {
             response.put("EXECUTIONID", workflowExecutionId);
             response.put("RUNID", workflowRunId);
             response.put("NAME", worklfowName);
+            response.put("MESSAGE", "Activity worker and Workflow Worker started");
             return response;
 
         } catch (Exception e) {

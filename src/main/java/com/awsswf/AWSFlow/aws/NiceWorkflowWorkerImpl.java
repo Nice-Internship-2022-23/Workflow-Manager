@@ -3,32 +3,37 @@ package com.awsswf.AWSFlow.aws;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties.Async;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.amazonaws.services.simpleworkflow.flow.DecisionContext;
-import com.amazonaws.services.simpleworkflow.flow.DecisionContextProviderImpl;
-import com.amazonaws.services.simpleworkflow.flow.WorkflowClock;
-import com.amazonaws.services.simpleworkflow.flow.WorkflowWorker;
-import com.amazonaws.services.simpleworkflow.flow.annotations.Asynchronous;
-import com.amazonaws.services.simpleworkflow.flow.core.AsyncScope;
 import com.amazonaws.services.simpleworkflow.flow.core.Promise;
-import com.amazonaws.services.simpleworkflow.model.DescribeWorkflowExecutionRequest;
+import com.amazonaws.services.simpleworkflow.flow.core.Settable;
 import com.amazonaws.services.simpleworkflow.model.WorkflowExecution;
-import com.awsswf.AWSFlow.aws.activities.StageTaskActivitiesClient;
-import com.awsswf.AWSFlow.aws.activities.StageTaskActivitiesClientImpl;
-import com.awsswf.AWSFlow.config.MySWFClient;
 import com.awsswf.AWSFlow.model.Task;
+
+import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivitiesClient;
+import com.awsswf.AWSFlow.aws.activities.AutomatedTaskActivitiesClientImpl;
+import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivitiesClient;
+import com.awsswf.AWSFlow.aws.activities.DependencyTaskActivitiesClientImpl;
+import com.awsswf.AWSFlow.aws.activities.HumanTaskActivitiesClient;
+import com.awsswf.AWSFlow.aws.activities.HumanTaskActivitiesClientImpl;
+import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesClientImpl;
+import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesClient;
+import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesClient;
+import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesClientImpl;
 
 public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
 
-    private StageTaskActivitiesClient stageTaskActivitiesClient = new StageTaskActivitiesClientImpl();
+    private NotificationTaskActivitiesClient notificationTaskActivitiesClient = new NotificationTaskActivitiesClientImpl();
+    private HumanTaskActivitiesClient humanTaskActivitiesClient = new HumanTaskActivitiesClientImpl();
+    private AutomatedTaskActivitiesClient automatedTaskActivitiesClient = new AutomatedTaskActivitiesClientImpl();
+    private DependencyTaskActivitiesClient dependencyTaskActivitiesClient = new DependencyTaskActivitiesClientImpl();
+    private TimerTaskActivitiesClient timerTaskActivitiesClient = new TimerTaskActivitiesClientImpl();
 
     @Override
-    public void initiateWorkflow(String workflowID) {
+    public void initiateWorkflow(String workflowID, WorkflowExecution workflowExecution) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -42,55 +47,47 @@ public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
         ResponseEntity<Map<String, ArrayList<Task>>> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET,
                 null,
                 responseType);
-        Map<String, ArrayList<Task>> response = responseEntity.getBody();
-        Promise<String> res = null;
-        Promise<WorkflowExecution> workflowExecution;
+        Map<String, ArrayList<Task>> stageList = responseEntity.getBody();
 
-        NiceChildWorkerClientExternalFactory factory = new NiceChildWorkerClientExternalFactoryImpl(
-                MySWFClient.getSWF(), MySWFClient.DOMAIN);
-
-        for (String key : response.keySet()) {
-
-            System.out.println("\n\t\t" + key);
-
-            // invoking through stage Activity
-
-            // using AsynScope
-            // try {
-            //     startActivityAsynchronously(key, response.get(key));
-            // } catch (Throwable e) {
-            //     e.printStackTrace();
-            // }
-    
-            res = stageTaskActivitiesClient.performActivities(key, response.get(key));
-            System.out.println(res);
-            
-
-            // using TaskListWorker object.
-            // String result = new TaskListWorker().performTasks(key, response.get(key));
-            // System.out.println(result);
-
-            // using Child worker
-            // NiceChildWorkerClientExternal childWorker = factory.getClient();
-            // childWorker.performActivities(key, response.get(key));
+        for (Map.Entry<String, ArrayList<Task>> entry : stageList.entrySet()) {
+            String stageName = entry.getKey();
+            ArrayList<Task> tasks = entry.getValue();
+            Promise<String> promise = new Settable<String>("First Activity");
+            for (Task task : tasks) {
+                switch (task.getTaskName()) {
+                    case "Notification":
+                        System.out.println("Notification called");
+                        promise = notificationTaskActivitiesClient.sendNotification(workflowID, url, "", promise);
+                        System.out.println(promise);
+                        break;
+                    case "Timer":
+                        System.out.println("Timer called");
+                        promise = timerTaskActivitiesClient.performTimerTask("", promise);
+                        System.out.println(promise);
+                        break;
+                    case "Automated":
+                        System.out.println("Automated called");
+                        promise = automatedTaskActivitiesClient.performAutomatedTask("", promise);
+                        System.out.println(promise);
+                        break;
+                    case "Dependency":
+                        System.out.println("Dependency called");
+                        promise = dependencyTaskActivitiesClient.performDependencyTask("", promise);
+                        System.out.println(promise);
+                        break;
+                    case "Human":
+                        System.out.println("Human called");
+                        promise = humanTaskActivitiesClient.performHumanTask("", promise);
+                        System.out.println(promise);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unknown task type: " + task.getTaskName());
+                }
+            }
+            System.out.println("Tasks in " + stageName + " completed");
         }
 
-        System.out.println("All tasks in all stages performed");
-
+        System.out.println("All tasks are completed.");
     }
 
-    // @Asynchronous
-    // private void startActivityAsynchronously(String stageName, ArrayList<Task> taskList) throws Throwable {
-    //     AsyncScope scope = new AsyncScope() {
-    //         @Override
-    //         protected void doAsync() {
-    //             Promise<String> res = stageTaskActivitiesClient.performActivities(stageName, taskList);
-    //             System.out.println(res);
-    //         }
-    //     };
-    //     scope.eventLoop();
-    //     if (!scope.isComplete()) {
-    //         System.out.println(scope.getAsynchronousThreadDumpAsString());
-    //     }
-    // }
 }

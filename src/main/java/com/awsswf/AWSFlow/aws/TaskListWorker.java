@@ -28,33 +28,33 @@ public class TaskListWorker {
     public String performTasks(String stageName, ArrayList<Task> taskList){
             for(Task task : taskList){
                 switch (task.getTaskName()) {
-                    case "Notification":
-                        result = notificationClient.sendNotification(stageName, stageName);
-                        System.out.println("Notification task result " + result);
-                        break;
+                    // case "Notification":
+                    //     result = notificationClient.sendNotification(stageName, stageName);
+                    //     System.out.println("Notification task result " + result);
+                    //     break;
 
-                    case "Timer":
-                        result = timerTaskActivitiesClient.performTimerTask();
-                        System.out.println("Timer task result " + result);
-                        break;
+                    // case "Timer":
+                    //     result = timerTaskActivitiesClient.performTimerTask();
+                    //     System.out.println("Timer task result " + result);
+                    //     break;
 
-                    case "Automated":
-                        result = automatedTaskActivitiesClient.performAutomatedTask();
-                        System.out.println("Automated task result " + result);
-                        break;
+                    // case "Automated":
+                    //     result = automatedTaskActivitiesClient.performAutomatedTask();
+                    //     System.out.println("Automated task result " + result);
+                    //     break;
 
-                    case "Dependency":
-                        result = dependencyTaskActivitiesClient.performDependencyTask();
-                        System.out.println("Dependency task result " + result);
-                        break;
+                    // case "Dependency":
+                    //     result = dependencyTaskActivitiesClient.performDependencyTask();
+                    //     System.out.println("Dependency task result " + result);
+                    //     break;
 
-                    case "Human":
-                        result = humanTaskActivitiesClient.performHumanTask();
-                        System.out.println("Human task result " + result);
-                        break;
+                    // case "Human":
+                    //     result = humanTaskActivitiesClient.performHumanTask();
+                    //     System.out.println("Human task result " + result);
+                    //     break;
 
-                    default:
-                        return "Empty taskList";
+                    // default:
+                    //     return "Empty taskList";
 
                 }
             }

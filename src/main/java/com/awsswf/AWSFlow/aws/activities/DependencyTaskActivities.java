@@ -5,10 +5,9 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.Activity;
 import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrationOptions;
 
 @Activities(version = "1.0")
-@ActivityRegistrationOptions(defaultTaskScheduleToStartTimeoutSeconds = 10, defaultTaskStartToCloseTimeoutSeconds = 86400)
+@ActivityRegistrationOptions(defaultTaskScheduleToStartTimeoutSeconds = 10, defaultTaskStartToCloseTimeoutSeconds = 60)
 public interface DependencyTaskActivities {
-    
     @Activity(name = "DependecyTask")
-    public String performDependencyTask();
+    public String performDependencyTask(String result);
     
 }

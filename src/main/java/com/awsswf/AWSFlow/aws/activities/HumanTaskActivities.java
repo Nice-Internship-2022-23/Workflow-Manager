@@ -7,8 +7,7 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 @Activities(version = "1.0")
 @ActivityRegistrationOptions(defaultTaskScheduleToStartTimeoutSeconds = 10, defaultTaskStartToCloseTimeoutSeconds = 600000)
 public interface HumanTaskActivities {
-    
     @Activity(name = "HumanTask")
-    public String performHumanTask();
+    public String performHumanTask(String result);
     
 }

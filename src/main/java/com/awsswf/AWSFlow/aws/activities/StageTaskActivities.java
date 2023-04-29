@@ -1,12 +1,10 @@
 package com.awsswf.AWSFlow.aws.activities;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import com.amazonaws.services.simpleworkflow.flow.annotations.Activities;
 import com.amazonaws.services.simpleworkflow.flow.annotations.Activity;
 import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrationOptions;
-import com.amazonaws.services.simpleworkflow.flow.annotations.ManualActivityCompletion;
 import com.amazonaws.services.simpleworkflow.model.WorkflowExecution;
 import com.awsswf.AWSFlow.model.Task;
 
