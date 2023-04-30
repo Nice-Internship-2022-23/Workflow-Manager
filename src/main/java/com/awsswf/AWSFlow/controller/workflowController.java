@@ -55,13 +55,15 @@ public class workflowController {
                 events.add("ActivityTaskScheduled -> " + event.getActivityTaskScheduledEventAttributes().getActivityType().getName() + " Id = " + event.getActivityTaskScheduledEventAttributes().getActivityId());
             }
             else if(event.getEventType().equals("ActivityTaskCompleted")){
-                events.add("ActivityTaskCompleted -> " + event.getActivityTaskCompletedEventAttributes().getResult());
+                events.add("ActivityTaskCompleted -> Result : " + event.getActivityTaskCompletedEventAttributes().getResult());
+            }
+            else if(event.getEventType().equals("WorkflowExecutionFailed")){
+                events.add("WorkflowExecutionFailed -> Reason : " + event.getActivityTaskFailedEventAttributes().getReason());
             }
             else{
                 events.add(event.getEventType());
             }
         }
-        System.out.println(events);
         return ResponseEntity.ok().body(events);
     }
 }

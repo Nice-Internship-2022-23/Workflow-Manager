@@ -37,7 +37,6 @@ public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
         Promise<Long> timer = new Settable<Long>(400L);
             Promise<String> result = new Settable<String>("First");
         for(Map.Entry<String, ArrayList<Task>> entry: stageList.entrySet()){
-            
             for(Task task : entry.getValue()){
                 if(task.getTaskName().equals("Notification")){
                     result = client.performNotificationTaskActivity(result, result, result, result); 

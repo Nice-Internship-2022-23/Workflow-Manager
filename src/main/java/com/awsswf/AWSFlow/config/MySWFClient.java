@@ -14,7 +14,7 @@ import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflowClientBuilder;
 @Configuration
 public class MySWFClient {
 
-    public static String DOMAIN = "Domain-7";
+    public static String DOMAIN = "Domain-8";
     public static String TASKLIST = "NiceTaskList";
 
     public static String getExecutionId(){
@@ -27,10 +27,6 @@ public class MySWFClient {
 
         String accessKey = System.getenv("AWS_ACCESS_KEY_ID");
         String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
-
-        // System.out.println("AWS_ACCESS_KEY_ID : " + accessKey + "\n" + "AWS_SECRET_ACCESS_KEY : " + secretKey);
-        // // String accessKey = "AKIAXIICH77FIGWEZTOI";
-        // // String secretKey = "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";
 
         BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
         
