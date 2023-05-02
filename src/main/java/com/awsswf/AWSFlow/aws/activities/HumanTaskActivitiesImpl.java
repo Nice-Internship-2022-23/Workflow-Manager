@@ -4,15 +4,12 @@ public class HumanTaskActivitiesImpl implements HumanTaskActivities {
     
     @Override
     public String performHumanTask(String result) {
-        System.out.println("Peforming Human task...");
         try {
-            Thread.sleep(5000);
-            return "Human Task";
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return e.getMessage().toString();
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
         }
-        // Perform human task here
+        return "Human Task Completed successfully";
     }
     
 }

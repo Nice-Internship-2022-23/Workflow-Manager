@@ -17,7 +17,7 @@ import com.amazonaws.services.sns.AmazonSNSClient;
 @Configuration
 public class Config {
 
-    public static String DOMAIN = "Domain-7";
+    public static String DOMAIN = "N1-Domain";
     public static String TASKLIST = "NiceTaskList";
     public static String REGIONS = "ap-south-1";
     private static String accessKey = System.getenv("AWS_ACCESS_KEY_ID");

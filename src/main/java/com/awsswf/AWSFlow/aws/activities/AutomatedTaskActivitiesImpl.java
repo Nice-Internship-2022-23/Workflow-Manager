@@ -5,15 +5,12 @@ public class AutomatedTaskActivitiesImpl implements AutomatedTaskActivities {
 
     @Override
     public String performAutomatedTask(String result) {
-        System.out.println("Peforming Automated task...");
         try {
-            Thread.sleep(2000);
-            return "Automated Task";
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return e.getMessage().toString();
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
         }
-        // Perform automated task herez
+        return "Automated Task Completed successfully";
     }
     
 }

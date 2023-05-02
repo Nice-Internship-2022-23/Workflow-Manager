@@ -7,39 +7,16 @@ import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
-import com.awsswf.AWSFlow.config.Config;
+import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesImpl;
+import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesImpl;
 
 public class NiceActivityWorkerImpl implements NiceActivityWorker {
 
     @Override
     public String performNotificationTaskActivity(String message, String receipant, String result) {
-        try {
-
-            // using SES
-            // SendEmailRequest request = new SendEmailRequest()
-            //         .withSource("pimpalemahesh2021@gmail.com")
-            //         .withDestination(new Destination().withToAddresses("maheshpimple2002@gmail.com"))
-            //         .withMessage(new Message()
-            //                 .withSubject(new Content().withData("Test email"))
-            //                 .withBody(new Body().withHtml(new Content().withData("<h1>Hello!</h1>"))));
-
-            // Config.getSES().sendEmail(request);
-
-
-            // using SNS
-            // String phoneNumber = "9653652759";
-            // PublishRequest publishRequest = new PublishRequest();
-            // publishRequest.setMessage("Test message");
-            // publishRequest.setPhoneNumber(phoneNumber);
-
-            // PublishResult publishResult = Config.getSNS().publish(publishRequest);
-            // System.out.println("SMS sent to " + phoneNumber + " with message Test message" + "public Result : " + publishResult);
-
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-        return "Notification Task Completed successfully";
+        return new NotificationTaskActivitiesImpl().sendNotification(message, receipant, result);
     }
+
 
     @Override
     public String performHumanTaskActivity(String result) {
@@ -50,6 +27,19 @@ public class NiceActivityWorkerImpl implements NiceActivityWorker {
         }
         return "Human Task Completed successfully";
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public String performAutomatedTaskActivity(String result) {
@@ -73,19 +63,13 @@ public class NiceActivityWorkerImpl implements NiceActivityWorker {
 
     @Override
     public String performTimerTaskActivity(String result, Long time) {
-        
-        try {
-            Thread.sleep(time);
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-        return "Timer Task Completed successfully";
+        return new TimerTaskActivitiesImpl().TimerTask(time);
     }
 
     @Override
     public String performStageTaskActivity(String stage, String result) {
         System.out.println("Task in stage " + stage + " completed.");
-        return "Task in stage " + stage;
+        return "Task in stage " + stage + " completed successfully.";
     }
 
 }

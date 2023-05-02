@@ -50,7 +50,7 @@ public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
                     result = client.performAutomatedTaskActivity(result, result);
                 }
             }
-            client.performStageTaskActivity(result, result, result, result);
+            client.performStageTaskActivity(entry.getKey(), entry.getKey(), result, result);
         }
     }
 
