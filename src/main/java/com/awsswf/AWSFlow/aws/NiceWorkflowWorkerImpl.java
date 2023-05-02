@@ -34,7 +34,7 @@ public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
 
         NiceActivityWorkerClient client = new NiceActivityWorkerClientImpl();
 
-        Promise<Long> timer = new Settable<Long>(400L);
+        Promise<Long> timer = new Settable<Long>(4000L);
             Promise<String> result = new Settable<String>("First");
         for(Map.Entry<String, ArrayList<Task>> entry: stageList.entrySet()){
             for(Task task : entry.getValue()){
@@ -50,9 +50,8 @@ public class NiceWorkflowWorkerImpl implements NiceWorkflowWorker {
                     result = client.performAutomatedTaskActivity(result, result);
                 }
             }
+            client.performStageTaskActivity(result, result, result, result);
         }
-
-        System.out.println("All tasks are completed.");
     }
 
 }

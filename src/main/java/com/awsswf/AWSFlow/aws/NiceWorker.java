@@ -12,7 +12,7 @@ import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflow;
 import com.amazonaws.services.simpleworkflow.flow.ActivityWorker;
 import com.amazonaws.services.simpleworkflow.flow.WorkflowWorker;
 
-import com.awsswf.AWSFlow.config.MySWFClient;
+import com.awsswf.AWSFlow.config.Config;
 
 public class NiceWorker {
 
@@ -21,10 +21,10 @@ public class NiceWorker {
 
     public Map<String, String> startWorkflow(String workflowId) {
 
-        AmazonSimpleWorkflow service = MySWFClient.getSWF();
-        String domain = MySWFClient.DOMAIN;
-        String taskList = MySWFClient.TASKLIST;
-        String executionId = MySWFClient.getExecutionId();
+        AmazonSimpleWorkflow service = Config.getSWF();
+        String domain = Config.DOMAIN;
+        String taskList = Config.TASKLIST;
+        String executionId = Config.getExecutionId();
 
         try {
 

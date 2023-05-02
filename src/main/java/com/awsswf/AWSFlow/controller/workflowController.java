@@ -19,7 +19,7 @@ import com.amazonaws.services.simpleworkflow.model.History;
 import com.amazonaws.services.simpleworkflow.model.HistoryEvent;
 import com.amazonaws.services.simpleworkflow.model.WorkflowExecution;
 import com.awsswf.AWSFlow.aws.NiceWorker;
-import com.awsswf.AWSFlow.config.MySWFClient;
+import com.awsswf.AWSFlow.config.Config;
 import com.awsswf.AWSFlow.model.historyRequest;
 
 @RestController
@@ -44,9 +44,9 @@ public class workflowController {
     @PostMapping("/api/history")
     public ResponseEntity<?> getExecutionHistory(@RequestBody historyRequest request){
         
-        History history = MySWFClient.getSWF().getWorkflowExecutionHistory(
+        History history = Config.getSWF().getWorkflowExecutionHistory(
             new GetWorkflowExecutionHistoryRequest()
-                .withDomain(MySWFClient.DOMAIN)
+                .withDomain(Config.DOMAIN)
                 .withExecution(new WorkflowExecution().withWorkflowId(request.getWorkflowExecutionId()).withRunId(request.getWorkflowRunId()))
         );
         List<String> events = new ArrayList<>();

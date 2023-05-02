@@ -25,5 +25,5 @@ public interface NiceActivityWorker {
     public String performTimerTaskActivity(String result, Long time);
 
     @Activity(name = "StageTaskActivity")
-    public void performStageTaskActivity(String stage, String result);
+    public String performStageTaskActivity(String stage, String result);
 }
