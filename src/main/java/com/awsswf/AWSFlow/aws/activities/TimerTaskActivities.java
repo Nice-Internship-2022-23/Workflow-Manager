@@ -9,7 +9,7 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 public interface TimerTaskActivities {
     
     @Activity(name = "TimerTask")
-    public String performTimerTask(String result);
+    public String performTimerTask(Long result);
     
 }
 

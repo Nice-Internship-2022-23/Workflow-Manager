@@ -23,6 +23,9 @@ public class Config {
     private static String accessKey = System.getenv("AWS_ACCESS_KEY_ID");
     private static String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
 
+    public static String EMAIL_USERNAME = "omkarugale057@gmail.com";
+    public static String EMAIL_PASSWORD = "dbojakpamoaptlxq";
+
     protected static BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
     public static String getExecutionId(){

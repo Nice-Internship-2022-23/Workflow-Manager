@@ -8,7 +8,7 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 @ActivityRegistrationOptions(defaultTaskScheduleToStartTimeoutSeconds = 10, defaultTaskStartToCloseTimeoutSeconds = 60)
 public interface NotificationTaskActivities {
     @Activity(name = "NotificationTask")
-    public String sendNotification(String message, String recipient, String result);
+    public String sendNotification(String message, String recipient, String subject, String result);
     
 }
 

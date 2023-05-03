@@ -1,22 +1,14 @@
 package com.awsswf.AWSFlow.aws;
 
-import com.amazonaws.services.simpleemail.model.Body;
-import com.amazonaws.services.simpleemail.model.Content;
-import com.amazonaws.services.simpleemail.model.Destination;
-import com.amazonaws.services.simpleemail.model.Message;
-import com.amazonaws.services.simpleemail.model.SendEmailRequest;
-import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.services.sns.model.PublishResult;
 import com.awsswf.AWSFlow.aws.activities.NotificationTaskActivitiesImpl;
 import com.awsswf.AWSFlow.aws.activities.TimerTaskActivitiesImpl;
 
 public class NiceActivityWorkerImpl implements NiceActivityWorker {
 
     @Override
-    public String performNotificationTaskActivity(String message, String receipant, String result) {
-        return new NotificationTaskActivitiesImpl().sendNotification(message, receipant, result);
+    public String performNotificationTaskActivity(String message, String receipant, String subject, String result) {
+        return new NotificationTaskActivitiesImpl().sendNotification(message, receipant, subject, result);
     }
-
 
     @Override
     public String performHumanTaskActivity(String result) {
@@ -27,19 +19,6 @@ public class NiceActivityWorkerImpl implements NiceActivityWorker {
         }
         return "Human Task Completed successfully";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public String performAutomatedTaskActivity(String result) {
@@ -63,7 +42,7 @@ public class NiceActivityWorkerImpl implements NiceActivityWorker {
 
     @Override
     public String performTimerTaskActivity(String result, Long time) {
-        return new TimerTaskActivitiesImpl().TimerTask(time);
+        return new TimerTaskActivitiesImpl().performTimerTask(time);
     }
 
     @Override

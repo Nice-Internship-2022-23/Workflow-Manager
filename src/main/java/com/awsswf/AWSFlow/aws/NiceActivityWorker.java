@@ -10,7 +10,7 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistrati
 public interface NiceActivityWorker {
     
     @Activity(name = "NotificationTaskActivity")
-    public String performNotificationTaskActivity(String message, String receipant, String result);
+    public String performNotificationTaskActivity(String message, String receipant, String subject, String result);
 
     @Activity(name = "HumanTaskActivity")
     public String performHumanTaskActivity(String result);

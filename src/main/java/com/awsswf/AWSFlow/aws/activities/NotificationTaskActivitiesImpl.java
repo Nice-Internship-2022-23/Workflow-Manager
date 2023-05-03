@@ -10,70 +10,55 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.awsswf.AWSFlow.config.Config;
+
 public class NotificationTaskActivitiesImpl implements NotificationTaskActivities {
 
     @Override
-    public String sendNotification(String message, String recipient, String result) {
+    public String sendNotification(String message, String recipient, String subject, String result) {
         try {
-
-            final String username = "omkarugale057@gmail.com";
-        final String password = "dbojakpamoaptlxq";
- 
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
- 
-        Session session = Session.getInstance(props,
-          new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+            if(recipient == "" || message == ""){
+                return "Wrong data format to send notification please edit your workflow";
             }
-          });
- 
-        try {
- 
-            Message sendMessage = new MimeMessage(session);
-            sendMessage.setFrom(new InternetAddress("omkarugale057@gmail.com"));
-            sendMessage.setRecipients(Message.RecipientType.TO,
-                InternetAddress.parse("maheshpimple2002@gmail.com"));
-                sendMessage.setSubject("Test email");
-                sendMessage.setText("This is a test email sent using JavaMail API.");
- 
-            Transport.send(sendMessage);
- 
-            System.out.println("Email sent successfully.");
- 
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-        
-            // using SES
-            // SendEmailRequest request = new SendEmailRequest()
-            //         .withSource("pimpalemahesh2021@gmail.com")
-            //         .withDestination(new Destination().withToAddresses("maheshpimple2002@gmail.com"))
-            //         .withMessage(new Message()
-            //                 .withSubject(new Content().withData("Test email"))
-            //                 .withBody(new Body().withHtml(new Content().withData("<h1>Hello!</h1>"))));
+            
+            System.out.println("Message : " + message + " Recipient : " + recipient + " Subject : " + subject);
+            final String username = Config.EMAIL_USERNAME;
+            final String password = Config.EMAIL_PASSWORD;
 
-            // Config.getSES().sendEmail(request);
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
 
+            Session session = Session.getInstance(props,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
 
-            // using SNS
-            // String phoneNumber = "9653652759";
-            // PublishRequest publishRequest = new PublishRequest();
-            // publishRequest.setMessage("Test message");
-            // publishRequest.setPhoneNumber(phoneNumber);
+            try {
+                System.out.println("Receipant : " + recipient + " Message : " + message);
+                Message sendMessage = new MimeMessage(session);
+                sendMessage.setFrom(new InternetAddress(Config.EMAIL_USERNAME));
+                sendMessage.setRecipients(Message.RecipientType.TO,
+                        InternetAddress.parse(recipient));
+                sendMessage.setSubject(subject);
+                sendMessage.setText(message);
 
-            // PublishResult publishResult = Config.getSNS().publish(publishRequest);
-            // System.out.println("SMS sent to " + phoneNumber + " with message Test message" + "public Result : " + publishResult);
+                Transport.send(sendMessage);
+
+                System.out.println("Email sent successfully.");
+
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
 
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
         }
         return "Notification Task Completed successfully";
     }
-    
-}
 
+}
