@@ -31,7 +31,7 @@ public class workflowController {
         return "Welcome";
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/api/{workflowId}")
     public ResponseEntity<?> startworkflow(@PathVariable String workflowId){
             Map<String, String> response = new HashMap<>();
@@ -40,7 +40,7 @@ public class workflowController {
         return ResponseEntity.ok().body(response);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/api/history")
     public ResponseEntity<?> getExecutionHistory(@RequestBody historyRequest request){
         
