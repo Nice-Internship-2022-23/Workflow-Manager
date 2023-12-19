@@ -17,14 +17,14 @@ import com.amazonaws.services.sns.AmazonSNSClient;
 @Configuration
 public class Config {
 
-    public static String DOMAIN = "N1-Domain";
+    public static String DOMAIN = "My-Domain";
     public static String TASKLIST = "NiceTaskList";
     public static String REGIONS = "ap-south-1";
     private static String accessKey = System.getenv("AWS_ACCESS_KEY_ID");
     private static String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
 
-    public static String EMAIL_USERNAME = "omkarugale057@gmail.com";
-    public static String EMAIL_PASSWORD = "dbojakpamoaptlxq";
+    public static String EMAIL_USERNAME = "myemail@gmail.com";
+    public static String EMAIL_PASSWORD = "mypassword";
 
     protected static BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
